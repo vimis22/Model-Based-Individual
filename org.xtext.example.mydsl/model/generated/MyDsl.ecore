@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="myDsl" nsURI="http://www.xtext.org/example/mydsl/MyDsl" nsPrefix="myDsl">
+  <eClassifiers xsi:type="ecore:EClass" name="Table">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nrColumns" eType="#//NrColumns"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="columns" upperBound="-1"
+        eType="#//Column" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Column">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="letter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="width" eType="#//WIDTH"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="alignment" eType="#//ALIGNMENT"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="color" eType="#//COLOR"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="line" unique="false" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cell" upperBound="-1" eType="#//CELL"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NrColumns">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Nr" unique="false" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WIDTH">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="number" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ALIGNMENT">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="position" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="COLOR">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="colorstring" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CELL">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="number" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="color" eType="#//COLOR"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//VALUE"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VALUE">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="string" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="expr" eType="#//ADD" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="math" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="range" eType="#//CELLRANGE"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ADD">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sub1" eType="#//SUB" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sub2" upperBound="-1" eType="#//SUB"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SUB">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mult1" eType="#//MULT"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mult2" upperBound="-1"
+        eType="#//MULT" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MULT">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="divid1" eType="#//DIVID"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="divid2" upperBound="-1"
+        eType="#//DIVID" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DIVID">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="prim1" eType="#//PRIM"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="prim2" upperBound="-1"
+        eType="#//PRIM" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PRIM">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mathunit" eType="#//MATHUNIT"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="add" eType="#//ADD" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CELLRANGE">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rangestart" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rangeend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MATHUNIT">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="number" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cellref" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+</ecore:EPackage>
