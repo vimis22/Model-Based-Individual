@@ -1,3 +1,13 @@
 .metadata/
 .idea/
 .claude/
+
+# Compiled bytecode
+**/bin/
+
+# Xtend generated files
+**/xtend-gen/
+**/*.xtendbin
+
+# Xtext generated files
+**/src-gen/

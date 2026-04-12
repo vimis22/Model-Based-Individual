@@ -8,15 +8,15 @@ import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import org.xtext.example.mydsl.myDsl.Table
-import java.util.ArrayList
 import org.xtext.example.mydsl.myDsl.VALUE
-import org.xtext.example.mydsl.myDsl.ADD
-import org.xtext.example.mydsl.myDsl.SUB
 import org.xtext.example.mydsl.myDsl.MATHUNIT
-import org.xtext.example.mydsl.myDsl.MULT
-import org.xtext.example.mydsl.myDsl.PRIM
+import org.xtext.example.mydsl.myDsl.Expression
+import org.xtext.example.mydsl.myDsl.Plus
+import org.xtext.example.mydsl.myDsl.Minus
+import org.xtext.example.mydsl.myDsl.Mult
+import org.xtext.example.mydsl.myDsl.Div
+import java.util.ArrayList
 import java.util.HashMap
-import org.xtext.example.mydsl.myDsl.DIVID
 
 /**
  * Generates code from your model files on save.
@@ -32,34 +32,35 @@ class MyDslGenerator extends AbstractGenerator {
         val rows = getRowData(table);
         fsa.generateFile('greetings.txt', table.compile(rows));
     }
-    
+
     private def getCellRef(int int1, int int2) {
-    	val line = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    	var ref = line.charAt(int1) + int2.toString();
-    	return ref
+        val line = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var ref = line.charAt(int1) + int2.toString();
+        return ref
     }
-    
-    private def ArrayList<ArrayList<String>>  getRowData(Table table) {
-    	val unevaluatedcellref = new HashMap<String, VALUE>()
-        for(var i = 0; i < table.columns.length; i+=1) {
-            for(var j = 0; j < table.columns.get(i).cell.length; j+=1) {
-            	val cellref = getCellRef(i,1+j)
-               unevaluatedcellref.put(cellref, table.columns.get(i).cell.get(j).value);
+
+    private def ArrayList<ArrayList<String>> getRowData(Table table) {
+        // Fase 1: Læg alle unevaluerede celleværdier i et HashMap
+        val unevaluatedcellref = new HashMap<String, VALUE>()
+        for (var i = 0; i < table.columns.length; i += 1) {
+            for (var j = 0; j < table.columns.get(i).cell.length; j += 1) {
+                val cellref = getCellRef(i, 1 + j)
+                unevaluatedcellref.put(cellref, table.columns.get(i).cell.get(j).value);
             }
         }
-    	
+
+        // Fase 2: Evaluer alle celleværdier
         val outerArrayList = new ArrayList<ArrayList<String>>()
-        for(var i = 0; i < table.columns.length; i+=1) {
+        for (var i = 0; i < table.columns.length; i += 1) {
             val row = new ArrayList<String>();
-            for(var j = 0; j < table.columns.get(i).cell.length; j+=1) {
+            for (var j = 0; j < table.columns.get(i).cell.length; j += 1) {
                 row.add(table.columns.get(i).cell.get(j).value.cellValueEvaluator(unevaluatedcellref));
             }
             outerArrayList.add(row);
         }
         return this.transpose(outerArrayList);
     }
-   
-    
+
     private def String compile(Table table, ArrayList<ArrayList<String>> rows) {
         return '''
         \begin{tabular}{ |«FOR col : table.columns»c|«ENDFOR» }
@@ -71,63 +72,33 @@ class MyDslGenerator extends AbstractGenerator {
         \end{tabular}
        ''';
     }
-    
-    private def String cellValueEvaluator(VALUE value, HashMap<String,VALUE> valueMap){
-    	if (value.string !== null) {
-    		return value.string
-    	} else {
-    		return value.expr.addEval(valueMap).toString()
-    	}
+
+    private def String cellValueEvaluator(VALUE value, HashMap<String, VALUE> valueMap) {
+        if (value.string !== null) {
+            return value.string
+        } else {
+            return value.expr.compileExp(valueMap).toString()
+        }
     }
-    
-    def addEval(ADD add, HashMap<String, VALUE> valueMap) {
-    	var result = add.sub1.subEval(valueMap)
-    	for (SUB s : add.sub2) {
-    		result = result + s.subEval(valueMap)
-    	}
-    	return result
+
+    // Erstatter de 5 gamle metoder (addEval, subEval, multEval, dividEval, primEval, mathunitEval)
+    // Matcher den nuværende grammar med Plus/Minus/Mult/Div/MATHUNIT (Left Recursion-fix)
+    def float compileExp(Expression exp, HashMap<String, VALUE> valueMap) {
+        switch exp {
+            Plus:     exp.left.compileExp(valueMap) + exp.right.compileExp(valueMap)
+            Minus:    exp.left.compileExp(valueMap) - exp.right.compileExp(valueMap)
+            Mult:     exp.left.compileExp(valueMap) * exp.right.compileExp(valueMap)
+            Div:      exp.left.compileExp(valueMap) / exp.right.compileExp(valueMap)
+            MATHUNIT: if (exp.cellref !== null) {
+                          // Name Resolution: slår cellereference op i HashMap
+                          valueMap.get(exp.cellref).expr.compileExp(valueMap)
+                      } else {
+                          exp.number as float
+                      }
+            default: 0.0f
+        }
     }
-    
-    def subEval(SUB sub, HashMap<String, VALUE> valueMap) {
-    	var result = sub.mult1.multEval(valueMap)
-    	for (MULT m : sub.mult2) {
-    		result = result - m.multEval(valueMap)
-    	}
-    	return result
-    }
-    
-    def multEval(MULT mult, HashMap<String, VALUE> valueMap) {
-    	var result = mult.divid1.dividEval(valueMap)
-    	for (DIVID d : mult.divid2) {
-    		result = result * d.dividEval(valueMap)
-    	}
-    	return result
-    }
-    
-    def dividEval(DIVID divid, HashMap<String, VALUE> valueMap) {
-    	var result = divid.prim1.primEval(valueMap)
-    	for (PRIM p : divid.prim2) {
-    		result = result / p.primEval(valueMap)
-    	}
-    	return result
-    }
-    
-    def float primEval(PRIM prim, HashMap<String, VALUE> valueMap) {
-    	if(prim.mathunit !== null) {
-    		return prim.mathunit.mathunitEval(valueMap)
-    	} else {
-    		return prim.add.addEval(valueMap)
-    	}
-    }
-    
-    def mathunitEval(MATHUNIT mathunit, HashMap<String, VALUE> valueMap) {
-    	if(mathunit.cellref !== null) {
-    		return valueMap.get(mathunit.cellref).expr.addEval(valueMap);
-    	} else {
-    		return mathunit.number
-    	}
-    }
-    
+
     private def ArrayList<ArrayList<String>> transpose(ArrayList<ArrayList<String>> matrixIn) {
         // FROM: https://stackoverflow.com/a/28057878
         var matrixOut = new ArrayList<ArrayList<String>>();
@@ -141,7 +112,6 @@ class MyDslGenerator extends AbstractGenerator {
                 matrixOut.add(col);
             }
         }
-    
         return matrixOut;
     }
 }
