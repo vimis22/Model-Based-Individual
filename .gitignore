@@ -4,6 +4,7 @@
 
 # Compiled bytecode
 **/bin/
+**/test-bin/
 
 # Xtend generated files
 **/xtend-gen/
