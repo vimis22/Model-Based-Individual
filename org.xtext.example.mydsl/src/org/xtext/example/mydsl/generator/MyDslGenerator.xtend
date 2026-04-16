@@ -41,7 +41,7 @@ class MyDslGenerator extends AbstractGenerator {
 
     private def ArrayList<ArrayList<String>> getRowData(Table table) {
         // Fase 1: Læg alle unevaluerede celleværdier i et HashMap
-        val unevaluatedcellref = new HashMap<String, VALUE>()
+        val unevaluatedcellref = new HashMap<String, VALUE>();
         for (var i = 0; i < table.columns.length; i += 1) {
             for (var j = 0; j < table.columns.get(i).cell.length; j += 1) {
                 val cellref = getCellRef(i, 1 + j)
@@ -77,23 +77,24 @@ class MyDslGenerator extends AbstractGenerator {
         if (value.string !== null) {
             return value.string
         } else {
-            return value.expr.compileExp(valueMap).toString()
+            return value.expr.compileExp().toString()
         }
     }
 
     // Erstatter de 5 gamle metoder (addEval, subEval, multEval, dividEval, primEval, mathunitEval)
     // Matcher den nuværende grammar med Plus/Minus/Mult/Div/MATHUNIT (Left Recursion-fix)
-    def float compileExp(Expression exp, HashMap<String, VALUE> valueMap) {
+    def float compileExp(Expression exp) {
         switch exp {
-            Plus:     exp.left.compileExp(valueMap) + exp.right.compileExp(valueMap)
-            Minus:    exp.left.compileExp(valueMap) - exp.right.compileExp(valueMap)
-            Mult:     exp.left.compileExp(valueMap) * exp.right.compileExp(valueMap)
-            Div:      exp.left.compileExp(valueMap) / exp.right.compileExp(valueMap)
-            MATHUNIT: if (exp.cellref !== null) {
+            Plus:     exp.left.compileExp() + exp.right.compileExp()
+            Minus:    exp.left.compileExp() - exp.right.compileExp()
+            Mult:     exp.left.compileExp() * exp.right.compileExp()
+            Div:      exp.left.compileExp() / exp.right.compileExp()
+            MATHUNIT: if (exp.cellRef !== null) {
                           // Name Resolution: slår cellereference op i HashMap
-                          valueMap.get(exp.cellref).expr.compileExp(valueMap)
+                          //valueMap.get(exp.cellRef).expr.compileExp(valueMap)
+                          exp.cellRef.value.expr.compileExp()
                       } else {
-                          exp.number as float
+                          Float.parseFloat(exp.number);
                       }
             default: 0.0f
         }
