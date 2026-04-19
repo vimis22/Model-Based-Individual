@@ -7,14 +7,21 @@
   <genPackages prefix="MyDsl" basePackage="org.xtext.example.mydsl" disposableProviderFactory="true"
       fileExtensions="mydsl" ecorePackage="MyDsl.ecore#/">
     <genClasses ecoreClass="MyDsl.ecore#//SystemRoot">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//SystemRoot/vars"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//SystemRoot/tables"/>
     </genClasses>
     <genClasses ecoreClass="MyDsl.ecore#//Table">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//Table/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Table/vars"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Table/columns"/>
+    </genClasses>
+    <genClasses ecoreClass="MyDsl.ecore#//LetDeclaration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//LetDeclaration/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//LetDeclaration/value"/>
     </genClasses>
     <genClasses ecoreClass="MyDsl.ecore#//Column">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//Column/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Column/vars"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Column/width"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Column/alignment"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Column/color"/>
@@ -38,6 +45,7 @@
     <genClasses ecoreClass="MyDsl.ecore#//MATHUNIT">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//MATHUNIT/number"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MyDsl.ecore#//MATHUNIT/cellRef"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MyDsl.ecore#//MATHUNIT/varRef"/>
     </genClasses>
     <genClasses ecoreClass="MyDsl.ecore#//VALUE">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//VALUE/string"/>

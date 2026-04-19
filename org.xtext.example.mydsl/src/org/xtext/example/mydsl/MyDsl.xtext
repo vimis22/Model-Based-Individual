@@ -2,9 +2,14 @@ grammar org.xtext.example.mydsl.MyDsl with org.eclipse.xtext.common.Terminals
 
 generate myDsl "http://www.xtext.org/example/mydsl/MyDsl"
 
-SystemRoot: tables+=Table+;
+//SystemRoot: tables+=Table+;
+SystemRoot: (vars+=LetDeclaration)* tables+=Table+;
 
-Table: 'Table' name=ID (columns+=Column)+;
+//Table: 'Table' name=ID (columns+=Column)+;
+Table: 'Table' name=ID (vars+=LetDeclaration)* (columns+=Column)+;
+
+//New Variable for Individual Extension:
+LetDeclaration: 'Let' name=ID '=' value=NUMBER;
 
 terminal LINE: 'rightVerticalLine' | 'leftVertical' BOOLEAN;
 terminal POSITION: 'left' | 'center' | 'right';
@@ -15,13 +20,15 @@ terminal COLORSTRING: LETTER+ | '#' ALPHANUMERIC+ | 'RGB('INT+','INT+','INT+')';
 terminal BOOLEAN: 'true' | 'false';
 //terminal CELLREF: ('A'..'Z')('0'..'9');
 
-Column: 'Column' name=LETTER (width=WIDTH)? (alignment=ALIGNMENT)? (color=COLOR)? (line+=LINE)* (cell+=CELL)*;
+//Column: 'Column' name=LETTER (width=WIDTH)? (alignment=ALIGNMENT)? (color=COLOR)? (line+=LINE)* (cell+=CELL)*;
+Column: 'Column' name=LETTER (vars+=LetDeclaration)* (width=WIDTH)? (alignment=ALIGNMENT)? (color=COLOR)? (line+=LINE)* (cell+=CELL)*;
 //NrColumns: 'Columns' Nr=INT;
 WIDTH: 'Width' number=INT 'cm';
 ALIGNMENT: 'Alignment' position=POSITION;
 COLOR: 'Color' colorstring=COLORSTRING;
 CELL: 'Cell' name=NUMBER color=COLOR? value=VALUE?;
-MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF];
+//MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF];
+MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF] | varRef=[LetDeclaration];
 CELLREF: LETTER "." NUMBER;
 
 MATH: 'sum' | 'mean' | 'median';

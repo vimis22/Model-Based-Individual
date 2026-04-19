@@ -3,6 +3,12 @@
  */
 package org.xtext.example.mydsl.validation
 
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.eclipse.xtext.validation.Check
+import org.xtext.example.mydsl.myDsl.MATHUNIT
+import org.xtext.example.mydsl.myDsl.MyDslPackage
+import org.xtext.example.mydsl.myDsl.SystemRoot
+import org.xtext.example.mydsl.myDsl.Table
 
 /**
  * This class contains custom validation rules. 
@@ -21,5 +27,59 @@ class MyDslValidator extends AbstractMyDslValidator {
 //					INVALID_NAME)
 //		}
 //	}
-	
+
+    public static val FORWARD_REFERENCE = 'forwardReference';
+    public static val DUPLICATE_VAR = 'duplicateVar';
+    public static val INVALID_NAME = 'invalidName';
+
+    @Check
+    def checkTableNameStartsWithCapital(Table table) {
+        if (!Character.isUpperCase(table.name.charAt(0))) {
+            warning('Table name shoudl start with a capital',
+            MyDslPackage.Literals.TABLE__NAME,
+            INVALID_NAME)
+        }
+    }
+
+    @Check
+    def checkNoDuplicateVarsInTable(Table table) {
+        val names = newHashSet
+        for (v : table.vars) {
+            if (!names.add(v.name)) {
+                error('Duplicat variable "' + v.name + '" in table',
+                v,
+                MyDslPackage.Literals.LET_DECLARATION__NAME,
+                DUPLICATE_VAR)
+            }
+        }
+    }
+
+	//Iteration over SystemRoot
+	@Check
+	def checkNoDuplicateVarsInRoot(SystemRoot root) {
+	    val names = newHashSet
+	    for (v : root.vars) {
+	        if (!names.add(v.name)) {
+	            error('Duplicate variable "' + v.name + '" in global scope',
+	            v,
+	            MyDslPackage.Literals.LET_DECLARATION__NAME,
+	            DUPLICATE_VAR)
+	        }
+	    }
+	}
+
+	//Custom Check on making sure that forward references are not allowed.
+	@Check
+	def checkNoForwardReferences(MATHUNIT unit) {
+	    if (unit.varRef === null) return
+
+	    val unitOffset = NodeModelUtils.getNode(unit).offset
+        val varOffset  = NodeModelUtils.getNode(unit.varRef).offset
+
+        if (varOffset < unitOffset) {
+            error('Forward Reference is not allowed: "' + unit.varRef.name + '" is defined later',
+            MyDslPackage.Literals.MATHUNIT__VAR_REF,
+            FORWARD_REFERENCE)
+        }
+	}
 }
