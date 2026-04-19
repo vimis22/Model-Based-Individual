@@ -89,9 +89,11 @@ class MyDslGenerator extends AbstractGenerator {
             Minus:    exp.left.compileExp() - exp.right.compileExp()
             Mult:     exp.left.compileExp() * exp.right.compileExp()
             Div:      exp.left.compileExp() / exp.right.compileExp()
-            MATHUNIT: if (exp.cellRef !== null) {
+            MATHUNIT: if (exp.varRef !== null) {
+                          Float.parseFloat(exp.varRef.value)
                           // Name Resolution: slår cellereference op i HashMap
                           //valueMap.get(exp.cellRef).expr.compileExp(valueMap)
+                      } else if (exp.cellRef !== null) {
                           exp.cellRef.value.expr.compileExp()
                       } else {
                           Float.parseFloat(exp.number);
