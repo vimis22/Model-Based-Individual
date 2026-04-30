@@ -31,11 +31,13 @@ class MyDslValidator extends AbstractMyDslValidator {
     public static val FORWARD_REFERENCE = 'forwardReference';
     public static val DUPLICATE_VAR = 'duplicateVar';
     public static val INVALID_NAME = 'invalidName';
+    public static val MISSING_TABLE = 'missingTable';
+    public static val MISSING_COLUMN = 'missingColumn';
 
     @Check
     def checkTableNameStartsWithCapital(Table table) {
         if (!Character.isUpperCase(table.name.charAt(0))) {
-            warning('Table name shoudl start with a capital',
+            warning('Table name should start with a capital',
             MyDslPackage.Literals.TABLE__NAME,
             INVALID_NAME)
         }
@@ -46,7 +48,7 @@ class MyDslValidator extends AbstractMyDslValidator {
         val names = newHashSet
         for (v : table.vars) {
             if (!names.add(v.name)) {
-                error('Duplicat variable "' + v.name + '" in table',
+                error('Duplicate variable "' + v.name + '" in table',
                 v,
                 MyDslPackage.Literals.LET_DECLARATION__NAME,
                 DUPLICATE_VAR)
@@ -68,6 +70,24 @@ class MyDslValidator extends AbstractMyDslValidator {
 	    }
 	}
 
+	@Check
+	def checkAtLeastOneTable(SystemRoot root) {
+	    if (root.tables === null || root.tables.isEmpty) {
+	        error('A Model must contain at least one table',
+	        MyDslPackage.Literals.SYSTEM_ROOT__TABLES,
+	        MISSING_TABLE)
+	    }
+    }
+
+    @Check
+    def checkAtLeastOneColumn(Table table) {
+        if (table.columns === null || table.columns.empty) {
+            error('Table "' + table.name + '" must contain at least one column',
+            MyDslPackage.Literals.TABLE__COLUMNS,
+            MISSING_COLUMN)
+        }
+    }
+
 	//Custom Check on making sure that forward references are not allowed.
 	@Check
 	def checkNoForwardReferences(MATHUNIT unit) {
@@ -76,7 +96,7 @@ class MyDslValidator extends AbstractMyDslValidator {
 	    val unitOffset = NodeModelUtils.getNode(unit).offset
         val varOffset  = NodeModelUtils.getNode(unit.varRef).offset
 
-        if (varOffset < unitOffset) {
+        if (varOffset > unitOffset) {
             error('Forward Reference is not allowed: "' + unit.varRef.name + '" is defined later',
             MyDslPackage.Literals.MATHUNIT__VAR_REF,
             FORWARD_REFERENCE)

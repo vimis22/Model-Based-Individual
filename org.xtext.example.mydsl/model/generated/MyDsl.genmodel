@@ -17,7 +17,7 @@
     </genClasses>
     <genClasses ecoreClass="MyDsl.ecore#//LetDeclaration">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//LetDeclaration/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//LetDeclaration/value"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//LetDeclaration/value"/>
     </genClasses>
     <genClasses ecoreClass="MyDsl.ecore#//Column">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//Column/name"/>

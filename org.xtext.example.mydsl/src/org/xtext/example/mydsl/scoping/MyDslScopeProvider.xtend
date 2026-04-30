@@ -7,6 +7,7 @@ import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.xtext.example.mydsl.myDsl.Column
+import org.xtext.example.mydsl.myDsl.LetDeclaration
 import org.xtext.example.mydsl.myDsl.MATHUNIT
 import org.xtext.example.mydsl.myDsl.MyDslPackage
 import org.xtext.example.mydsl.myDsl.SystemRoot
@@ -19,22 +20,49 @@ class MyDslScopeProvider extends AbstractMyDslScopeProvider {
             reference == MyDslPackage.Literals.MATHUNIT__VAR_REF) {
             return buildLetScope(context as MATHUNIT)
         }
+
         return super.getScope(context, reference)
     }
 
     def IScope buildLetScope(MATHUNIT unit) {
         val unitOffset = NodeModelUtils.getNode(unit).offset
 
+        val currentLet = EcoreUtil2.getContainerOfType(unit, LetDeclaration)
+
         val column = EcoreUtil2.getContainerOfType(unit, Column)
         val table  = EcoreUtil2.getContainerOfType(unit, Table)
         val root   = EcoreUtil2.getContainerOfType(unit, SystemRoot)
 
-        val colDefs    = column?.vars.filter[NodeModelUtils.getNode(it).offset < unitOffset] ?: #[]
-        val tableDefs  = table?.vars.filter[NodeModelUtils.getNode(it).offset < unitOffset] ?: #[]
-        val globalDefs = root?.vars ?: #[]
+        val globalDefs = root?.vars
+            .filter[isVisibleBefore(it, unitOffset, currentLet)]
+            .toList ?: #[]
+
+        val tableDefs = table?.vars
+            .filter[isVisibleBefore(it, unitOffset, currentLet)]
+            .toList ?: #[]
+
+        val colDefs = column?.vars
+            .filter[isVisibleBefore(it, unitOffset, currentLet)]
+            .toList ?: #[]
 
         val globalScope = Scopes.scopeFor(globalDefs, IScope.NULLSCOPE)
         val tableScope  = Scopes.scopeFor(tableDefs, globalScope)
-        return Scopes.scopeFor(colDefs, tableScope)
+        val columnScope = Scopes.scopeFor(colDefs, tableScope)
+
+        return columnScope
+    }
+
+    def boolean isVisibleBefore(LetDeclaration declaration, int unitOffset, LetDeclaration currentLet) {
+        if (declaration === currentLet) {
+            return false
+        }
+
+        val declarationNode = NodeModelUtils.getNode(declaration)
+
+        if (declarationNode === null) {
+            return false
+        }
+
+        return declarationNode.endOffset < unitOffset
     }
 }

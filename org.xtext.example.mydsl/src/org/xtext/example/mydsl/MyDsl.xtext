@@ -9,13 +9,19 @@ SystemRoot: (vars+=LetDeclaration)* tables+=Table+;
 Table: 'Table' name=ID (vars+=LetDeclaration)* (columns+=Column)+;
 
 //New Variable for Individual Extension:
-LetDeclaration: 'Let' name=ID '=' value=NUMBER;
+//LetDeclaration: 'Let' name=ID '=' value=NUMBER;
+LetDeclaration: 'Let' name=ID '=' value=Exp;
 
 terminal LINE: 'rightVerticalLine' | 'leftVertical' BOOLEAN;
 terminal POSITION: 'left' | 'center' | 'right';
 terminal LETTER: ('A'..'Z');
 terminal ALPHANUMERIC: INT | LETTER;
-terminal NUMBER: INT;
+
+//terminal NUMBER: INT;
+NUMBER: INT (('.'|',') INT)?;
+// Added CellIndex for Individual Extension.
+CELLINDEX: INT;
+
 terminal COLORSTRING: LETTER+ | '#' ALPHANUMERIC+ | 'RGB('INT+','INT+','INT+')';
 terminal BOOLEAN: 'true' | 'false';
 //terminal CELLREF: ('A'..'Z')('0'..'9');
@@ -26,10 +32,13 @@ Column: 'Column' name=LETTER (vars+=LetDeclaration)* (width=WIDTH)? (alignment=A
 WIDTH: 'Width' number=INT 'cm';
 ALIGNMENT: 'Alignment' position=POSITION;
 COLOR: 'Color' colorstring=COLORSTRING;
-CELL: 'Cell' name=NUMBER color=COLOR? value=VALUE?;
+
+//CELL: 'Cell' name=NUMBER color=COLOR? value=VALUE?;
+CELL: 'Cell' name=CELLINDEX color=COLOR? value=VALUE?;
+
 //MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF];
-MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF] | varRef=[LetDeclaration];
-CELLREF: LETTER "." NUMBER;
+MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF] | varRef=[LetDeclaration|ID];
+CELLREF: LETTER "." CELLINDEX;
 
 MATH: 'sum' | 'mean' | 'median';
 VALUE: 'Value' (string=STRING | expr=Exp | math=MATH '(' range=CELLRANGE ')');
