@@ -23,7 +23,7 @@ class MyDslScopeProvider extends AbstractMyDslScopeProvider {
 
         return super.getScope(context, reference)
     }
-
+//Samler alle variabler fra column, table og systemroot som er synlige før den aktuelle let-deklarationen, og bygger et scope for disse variablene.
     def IScope buildLetScope(MATHUNIT unit) {
         val unitOffset = NodeModelUtils.getNode(unit).offset
 
@@ -33,6 +33,7 @@ class MyDslScopeProvider extends AbstractMyDslScopeProvider {
         val table  = EcoreUtil2.getContainerOfType(unit, Table)
         val root   = EcoreUtil2.getContainerOfType(unit, SystemRoot)
 
+//Filtrerer let-deklarationer fra SystemRoot, Table og Column, så kun de variabler der er erklæret før den aktuelle position og ikke er den nuværende let-deklaration selv, inkluderes i scopet.
         val globalDefs = root?.vars
             .filter[isVisibleBefore(it, unitOffset, currentLet)]
             .toList ?: #[]
@@ -52,6 +53,7 @@ class MyDslScopeProvider extends AbstractMyDslScopeProvider {
         return columnScope
     }
 
+//Her kan det ses, at variable defineret før den aktuelle let-deklarationen er ikke synlig, men gjort usynlig.
     def boolean isVisibleBefore(LetDeclaration declaration, int unitOffset, LetDeclaration currentLet) {
         if (declaration === currentLet) {
             return false
