@@ -15,9 +15,15 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Table/vars"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Table/columns"/>
     </genClasses>
-    <genClasses ecoreClass="MyDsl.ecore#//LetDeclaration">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//LetDeclaration/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//LetDeclaration/value"/>
+    <genClasses ecoreClass="MyDsl.ecore#//VarDeclaration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//VarDeclaration/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//VarDeclaration/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//VarDeclaration/value"/>
+    </genClasses>
+    <genClasses ecoreClass="MyDsl.ecore#//AnyValue">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//AnyValue/numVal"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//AnyValue/strVal"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//AnyValue/boolVal"/>
     </genClasses>
     <genClasses ecoreClass="MyDsl.ecore#//Column">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//Column/name"/>

@@ -90,8 +90,8 @@ class MyDslGenerator extends AbstractGenerator {
             Mult:     exp.left.compileExp() * exp.right.compileExp()
             Div:      exp.left.compileExp() / exp.right.compileExp()
             MATHUNIT: if (exp.varRef !== null) {
-            			  val letDecl = exp.varRef
-            			  return compileExp(letDecl.value)
+            			  val varDecl = exp.varRef
+            			  return compileExp(varDecl.value.numVal)
                           // Name Resolution: slår cellereference op i HashMap
                           //valueMap.get(exp.cellRef).expr.compileExp(valueMap)
                       } else if (exp.cellRef !== null) {

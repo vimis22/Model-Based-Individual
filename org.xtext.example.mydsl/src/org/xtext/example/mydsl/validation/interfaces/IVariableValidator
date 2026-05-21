@@ -1,0 +1,12 @@
+package org.xtext.example.mydsl.validation.interfaces
+
+import org.eclipse.xtext.validation.ValidationMessageAcceptor
+import org.xtext.example.mydsl.myDsl.MATHUNIT
+import org.xtext.example.mydsl.myDsl.SystemRoot
+import org.xtext.example.mydsl.myDsl.Table
+
+interface IVariableValidator {
+    def void checkNoDuplicateVarsInTable(Table table, ValidationMessageAcceptor acceptor)
+    def void checkNoDuplicateVarsInRoot(SystemRoot root, ValidationMessageAcceptor acceptor)
+    def void checkNoForwardReferences(MATHUNIT unit, ValidationMessageAcceptor acceptor)
+}
