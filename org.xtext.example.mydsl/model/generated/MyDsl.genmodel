@@ -6,33 +6,33 @@
     complianceLevel="17.0" copyrightFields="false" runtimeVersion="2.36">
   <genPackages prefix="MyDsl" basePackage="org.xtext.example.mydsl" disposableProviderFactory="true"
       fileExtensions="mydsl" ecorePackage="MyDsl.ecore#/">
-    <genClasses ecoreClass="MyDsl.ecore#//SystemRoot">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//SystemRoot/vars"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//SystemRoot/tables"/>
+    <genClasses ecoreClass="MyDsl.ecore#//SYSTEMROOT">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//SYSTEMROOT/variables"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//SYSTEMROOT/tables"/>
     </genClasses>
-    <genClasses ecoreClass="MyDsl.ecore#//Table">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//Table/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Table/vars"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Table/columns"/>
+    <genClasses ecoreClass="MyDsl.ecore#//TABLE">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//TABLE/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//TABLE/variables"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//TABLE/columns"/>
     </genClasses>
-    <genClasses ecoreClass="MyDsl.ecore#//VarDeclaration">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//VarDeclaration/type"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//VarDeclaration/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//VarDeclaration/value"/>
+    <genClasses ecoreClass="MyDsl.ecore#//VARDECLARATION">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//VARDECLARATION/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//VARDECLARATION/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//VARDECLARATION/value"/>
     </genClasses>
-    <genClasses ecoreClass="MyDsl.ecore#//AnyValue">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//AnyValue/numVal"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//AnyValue/strVal"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//AnyValue/boolVal"/>
+    <genClasses ecoreClass="MyDsl.ecore#//ANYVALUE">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//ANYVALUE/numberValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//ANYVALUE/stringValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//ANYVALUE/booleanValue"/>
     </genClasses>
-    <genClasses ecoreClass="MyDsl.ecore#//Column">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//Column/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Column/vars"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Column/width"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Column/alignment"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Column/color"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//Column/line"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Column/cell"/>
+    <genClasses ecoreClass="MyDsl.ecore#//COLUMN">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//COLUMN/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//COLUMN/variables"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//COLUMN/width"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//COLUMN/alignment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//COLUMN/color"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//COLUMN/line"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//COLUMN/cell"/>
     </genClasses>
     <genClasses ecoreClass="MyDsl.ecore#//WIDTH">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//WIDTH/number"/>

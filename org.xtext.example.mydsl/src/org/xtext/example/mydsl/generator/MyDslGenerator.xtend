@@ -7,7 +7,7 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import org.xtext.example.mydsl.myDsl.Table
+import org.xtext.example.mydsl.myDsl.TABLE
 import org.xtext.example.mydsl.myDsl.VALUE
 import org.xtext.example.mydsl.myDsl.MATHUNIT
 import org.xtext.example.mydsl.myDsl.Expression
@@ -20,14 +20,14 @@ import java.util.HashMap
 
 /**
  * Generates code from your model files on save.
- * 
+ *
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#code-generation
  */
 class MyDslGenerator extends AbstractGenerator {
 
     override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
         val table = resource.allContents
-                .filter(Table)
+                .filter(TABLE)
                 .findFirst[true];
         val rows = getRowData(table);
         fsa.generateFile('greetings.txt', table.compile(rows));
@@ -39,7 +39,7 @@ class MyDslGenerator extends AbstractGenerator {
         return ref
     }
 
-    private def ArrayList<ArrayList<String>> getRowData(Table table) {
+    private def ArrayList<ArrayList<String>> getRowData(TABLE table) {
         // Fase 1: Læg alle unevaluerede celleværdier i et HashMap
         val unevaluatedcellref = new HashMap<String, VALUE>();
         for (var i = 0; i < table.columns.length; i += 1) {
@@ -61,7 +61,7 @@ class MyDslGenerator extends AbstractGenerator {
         return this.transpose(outerArrayList);
     }
 
-    private def String compile(Table table, ArrayList<ArrayList<String>> rows) {
+    private def String compile(TABLE table, ArrayList<ArrayList<String>> rows) {
         return '''
         \begin{tabular}{ |«FOR col : table.columns»c|«ENDFOR» }
         «FOR row: rows»
@@ -91,7 +91,7 @@ class MyDslGenerator extends AbstractGenerator {
             Div:      exp.left.compileExp() / exp.right.compileExp()
             MATHUNIT: if (exp.varRef !== null) {
             			  val varDecl = exp.varRef
-            			  return compileExp(varDecl.value.numVal)
+            			  return compileExp(varDecl.value.numberValue)
                           // Name Resolution: slår cellereference op i HashMap
                           //valueMap.get(exp.cellRef).expr.compileExp(valueMap)
                       } else if (exp.cellRef !== null) {

@@ -10,14 +10,14 @@ import org.eclipse.xtext.testing.util.ParseHelper
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
-import org.xtext.example.mydsl.myDsl.Table
+import org.xtext.example.mydsl.myDsl.TABLE
 
 @ExtendWith(InjectionExtension)
 @InjectWith(MyDslInjectorProvider)
 class MyDslParsingTest {
 	@Inject
-	ParseHelper<Table> parseHelper
-	
+	ParseHelper<TABLE> parseHelper
+
 	@Test
 	def void loadModel() {
 		val result = parseHelper.parse('''

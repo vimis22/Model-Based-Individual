@@ -2,14 +2,14 @@ grammar org.xtext.example.mydsl.MyDsl with org.eclipse.xtext.common.Terminals
 
 generate myDsl "http://www.xtext.org/example/mydsl/MyDsl"
 
-//SystemRoot: tables+=Table+;
-SystemRoot: (vars+=VarDeclaration)* tables+=Table+;
+//SYSTEMROOT: tables+=TABLE+;
+SYSTEMROOT: (variables+=VARDECLARATION)* tables+=TABLE+;
 
-Table: 'Table' name=ID (vars+=VarDeclaration)* (columns+=Column)+;
+TABLE: 'Table' name=ID (variables+=VARDECLARATION)* (columns+=COLUMN)+;
 
-VarDeclaration: 'var' type=('int' | 'double' | 'string' | 'boolean') name=ID '=' value=AnyValue;
+VARDECLARATION: 'var' type=('int' | 'double' | 'string' | 'boolean') name=ID '=' value=ANYVALUE;
 
-AnyValue: numVal=Exp | strVal=STRING | boolVal=BOOLEAN;
+ANYVALUE: numberValue=Exp | stringValue=STRING | booleanValue=BOOLEAN;
 
 terminal LINE: 'rightVerticalLine' | 'leftVertical' BOOLEAN;
 terminal POSITION: 'left' | 'center' | 'right';
@@ -25,7 +25,7 @@ terminal COLORSTRING: LETTER+ | '#' ALPHANUMERIC+ | 'RGB('INT+','INT+','INT+')';
 terminal BOOLEAN: 'true' | 'false';
 //terminal CELLREF: ('A'..'Z')('0'..'9');
 
-Column: 'Column' name=LETTER (vars+=VarDeclaration)* (width=WIDTH)? (alignment=ALIGNMENT)? (color=COLOR)? (line+=LINE)* (cell+=CELL)*;
+COLUMN: 'Column' name=LETTER (variables+=VARDECLARATION)* (width=WIDTH)? (alignment=ALIGNMENT)? (color=COLOR)? (line+=LINE)* (cell+=CELL)*;
 //NrColumns: 'Columns' Nr=INT;
 WIDTH: 'Width' number=INT 'cm';
 ALIGNMENT: 'Alignment' position=POSITION;
@@ -35,7 +35,7 @@ COLOR: 'Color' colorstring=COLORSTRING;
 CELL: 'Cell' name=CELLINDEX color=COLOR? value=VALUE?;
 
 //MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF];
-MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF] | varRef=[VarDeclaration|ID];
+MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF] | varRef=[VARDECLARATION|ID];
 CELLREF: LETTER "." CELLINDEX;
 
 MATH: 'sum' | 'mean' | 'median';

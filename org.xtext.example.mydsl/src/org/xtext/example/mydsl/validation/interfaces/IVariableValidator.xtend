@@ -1,11 +1,11 @@
 package org.xtext.example.mydsl.validation.interfaces
 
 import org.xtext.example.mydsl.myDsl.MATHUNIT
-import org.xtext.example.mydsl.myDsl.SystemRoot
-import org.xtext.example.mydsl.myDsl.Table
+import org.xtext.example.mydsl.myDsl.SYSTEMROOT
+import org.xtext.example.mydsl.myDsl.TABLE
 
 interface IVariableValidator {
-    def void checkNoDuplicateVarsInTable(Table table)
-    def void checkNoDuplicateVarsInRoot(SystemRoot root)
+    def void checkNoDuplicateVarsInTable(TABLE table)
+    def void checkNoDuplicateVarsInRoot(SYSTEMROOT root)
     def void checkNoForwardReferences(MATHUNIT unit)
 }

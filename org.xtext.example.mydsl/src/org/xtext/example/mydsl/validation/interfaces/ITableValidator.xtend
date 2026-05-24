@@ -1,10 +1,10 @@
 package org.xtext.example.mydsl.validation.interfaces
 
-import org.xtext.example.mydsl.myDsl.SystemRoot
-import org.xtext.example.mydsl.myDsl.Table
+import org.xtext.example.mydsl.myDsl.SYSTEMROOT
+import org.xtext.example.mydsl.myDsl.TABLE
 
 interface ITableValidator {
-    def void checkTableNameStartsWithCapital(Table table)
-    def void checkAtLeastOneTable(SystemRoot root)
-    def void checkAtLeastOneColumn(Table table)
+    def void checkTableNameStartsWithCapital(TABLE table)
+    def void checkAtLeastOneTable(SYSTEMROOT root)
+    def void checkAtLeastOneColumn(TABLE table)
 }
