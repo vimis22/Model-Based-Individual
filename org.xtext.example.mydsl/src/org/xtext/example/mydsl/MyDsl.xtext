@@ -2,44 +2,46 @@ grammar org.xtext.example.mydsl.MyDsl with org.eclipse.xtext.common.Terminals
 
 generate myDsl "http://www.xtext.org/example/mydsl/MyDsl"
 
+// === ENTRY POINT ===
 //SYSTEMROOT: tables+=TABLE+;
 SYSTEMROOT: (variables+=VARDECLARATION)* tables+=TABLE+;
 
-TABLE: 'Table' name=ID (variables+=VARDECLARATION)* (columns+=COLUMN)+;
-
+// === VARIABLER ===
 VARDECLARATION: 'var' type=('int' | 'double' | 'string' | 'boolean') name=ID '=' value=ANYVALUE;
 
 ANYVALUE: numberValue=Exp | stringValue=STRING | booleanValue=BOOLEAN;
 
-terminal LINE: 'rightVerticalLine' | 'leftVertical' BOOLEAN;
-terminal POSITION: 'left' | 'center' | 'right';
-terminal LETTER: ('A'..'Z');
-terminal ALPHANUMERIC: INT | LETTER;
+// === TABLE ===
+TABLE: 'Table' name=ID (variables+=VARDECLARATION)* (columns+=COLUMN)+;
 
-//terminal NUMBER: INT;
-NUMBER: INT (('.'|',') INT)?;
-// Added CellIndex for Individual Extension.
-CELLINDEX: INT;
-
-terminal COLORSTRING: LETTER+ | '#' ALPHANUMERIC+ | 'RGB('INT+','INT+','INT+')';
-terminal BOOLEAN: 'true' | 'false';
-//terminal CELLREF: ('A'..'Z')('0'..'9');
-
+// === KOLONNE ===
 COLUMN: 'Column' name=LETTER (variables+=VARDECLARATION)* (width=WIDTH)? (alignment=ALIGNMENT)? (color=COLOR)? (line+=LINE)* (cell+=CELL)*;
 //NrColumns: 'Columns' Nr=INT;
 WIDTH: 'Width' number=INT 'cm';
 ALIGNMENT: 'Alignment' position=POSITION;
 COLOR: 'Color' colorstring=COLORSTRING;
 
+// === CELLE ===
 //CELL: 'Cell' name=NUMBER color=COLOR? value=VALUE?;
 CELL: 'Cell' name=CELLINDEX color=COLOR? value=VALUE?;
 
-//MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF];
-MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF] | varRef=[VARDECLARATION|ID];
-CELLREF: LETTER "." CELLINDEX;
+// Added CellIndex for Individual Extension.
+CELLINDEX: INT;
+
+VALUE: 'Value' (string=STRING | expr=Exp | math=MATH '(' range=CELLRANGE ')');
 
 MATH: 'sum' | 'mean' | 'median';
-VALUE: 'Value' (string=STRING | expr=Exp | math=MATH '(' range=CELLRANGE ')');
+
+CELLRANGE: rangestart=CELLREF ':' rangeend=CELLREF;
+
+CELLREF: LETTER "." CELLINDEX;
+
+//terminal NUMBER: INT;
+NUMBER: INT (('.'|',') INT)?;
+
+// === MATEMATIK / UDTRYK ===
+//MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF];
+MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF] | varRef=[VARDECLARATION|ID];
 
 Exp returns Expression:
     Term (
@@ -57,4 +59,11 @@ Factor returns Expression:
     MATHUNIT |
     '(' Exp ')';
 
-CELLRANGE: rangestart=CELLREF ':' rangeend=CELLREF;
+// === TERMINALER ===
+terminal BOOLEAN: 'true' | 'false';
+terminal POSITION: 'left' | 'center' | 'right';
+terminal LETTER: ('A'..'Z');
+terminal ALPHANUMERIC: INT | LETTER;
+terminal COLORSTRING: LETTER+ | '#' ALPHANUMERIC+ | 'RGB('INT+','INT+','INT+')';
+//terminal CELLREF: ('A'..'Z')('0'..'9');
+terminal LINE: 'rightVerticalLine' | 'leftVertical' BOOLEAN;
