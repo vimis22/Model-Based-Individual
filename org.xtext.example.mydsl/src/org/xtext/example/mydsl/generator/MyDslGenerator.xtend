@@ -76,6 +76,26 @@ class MyDslGenerator extends AbstractGenerator {
     private def String cellValueEvaluator(VALUE value, HashMap<String, VALUE> valueMap) {
         if (value.string !== null) {
             return value.string
+        } else if (value.math !== null) {
+            val startColIdx = value.range.rangestart.charAt(0) - 'A'
+            val startRow = Integer.parseInt(value.range.rangestart.substring(2))
+            val endColIdx = value.range.rangeend.charAt(0) - 'A'
+            val endRow = Integer.parseInt(value.range.rangeend.substring(2))
+            val nums = new ArrayList<Float>()
+            for (var col = startColIdx; col <= endColIdx; col++) {
+                for (var row = startRow; row <= endRow; row++) {
+                    val v = valueMap.get(getCellRef(col, row))
+                    if (v !== null && v.expr !== null) nums.add(v.expr.compileExp())
+                }
+            }
+            if (nums.empty) return "0"
+            val total = nums.reduce[a, b | a + b]
+            switch value.math {
+                case "sum":    return total.toString()
+                case "mean":   return (total / nums.size()).toString()
+                case "median": return nums.sort.get(nums.size / 2).toString()
+                default:       return "0"
+            }
         } else {
             return value.expr.compileExp().toString()
         }
