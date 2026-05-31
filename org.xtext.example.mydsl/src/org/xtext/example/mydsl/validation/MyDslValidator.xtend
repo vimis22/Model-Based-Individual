@@ -30,10 +30,10 @@ class MyDslValidator extends AbstractMyDslValidator implements ITableValidator, 
     @Check
     override def checkNoDuplicateVarsInRoot(SYSTEMROOT root) {
         val names = newHashSet
-        for (v : root.variables) {
-            if (!names.add(v.name)) {
-                error('Duplicate variable "' + v.name + '" in global scope',
-                    v, MyDslPackage.Literals.VARDECLARATION__NAME, DUPLICATE_VAR)
+        for (variable : root.variables) {
+            if (!names.add(variable.name)) {
+                error('Duplicate variable "' + variable.name + '" in global scope',
+                    variable, MyDslPackage.Literals.VARDECLARATION__NAME, DUPLICATE_VAR)
             }
         }
     }
@@ -41,10 +41,10 @@ class MyDslValidator extends AbstractMyDslValidator implements ITableValidator, 
     @Check
     override def checkNoDuplicateTableNames(SYSTEMROOT root) {
         val names = newHashSet
-        for (t : root.tables) {
-            if (!names.add(t.name)) {
-                error('Duplicate table name "' + t.name + '"',
-                    t, MyDslPackage.Literals.TABLE__NAME, DUPLICATE_VAR)
+        for (table : root.tables) {
+            if (!names.add(table.name)) {
+                error('Duplicate table name "' + table.name + '"',
+                    table, MyDslPackage.Literals.TABLE__NAME, DUPLICATE_VAR)
             }
         }
     }
@@ -63,10 +63,10 @@ class MyDslValidator extends AbstractMyDslValidator implements ITableValidator, 
     @Check
     override def checkNoDuplicateVarsInTable(TABLE table) {
         val names = newHashSet
-        for (v : table.variables) {
-            if (!names.add(v.name)) {
-                error('Duplicate variable "' + v.name + '" in table',
-                    v, MyDslPackage.Literals.VARDECLARATION__NAME, DUPLICATE_VAR)
+        for (variable : table.variables) {
+            if (!names.add(variable.name)) {
+                error('Duplicate variable "' + variable.name + '" in table',
+                    variable, MyDslPackage.Literals.VARDECLARATION__NAME, DUPLICATE_VAR)
             }
         }
     }
@@ -74,10 +74,10 @@ class MyDslValidator extends AbstractMyDslValidator implements ITableValidator, 
     @Check
     override def checkNoDuplicateColumnsInTable(TABLE table) {
         val names = newHashSet
-        for (c : table.columns) {
-            if (!names.add(c.name)) {
-                error('Duplicate column "' + c.name + '" in table "' + table.name + '"',
-                    c, MyDslPackage.Literals.COLUMN__NAME, DUPLICATE_COLUMN)
+        for (column : table.columns) {
+            if (!names.add(column.name)) {
+                error('Duplicate column "' + column.name + '" in table "' + table.name + '"',
+                    column, MyDslPackage.Literals.COLUMN__NAME, DUPLICATE_COLUMN)
             }
         }
     }

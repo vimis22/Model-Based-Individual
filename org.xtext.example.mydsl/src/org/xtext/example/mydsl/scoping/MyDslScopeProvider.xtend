@@ -15,7 +15,7 @@ import org.xtext.example.mydsl.myDsl.TABLE
 import org.xtext.example.mydsl.myDsl.VARDECLARATION
 
 class MyDslScopeProvider extends AbstractMyDslScopeProvider {
-
+    //Example taken from the Slide Powerpoint from Lectures
     override IScope getScope(EObject context, EReference reference) {
         if (context instanceof MATHUNIT && reference == MyDslPackage.Literals.MATHUNIT__VAR_REF)
             return buildVarScope(context as MATHUNIT)
@@ -23,6 +23,7 @@ class MyDslScopeProvider extends AbstractMyDslScopeProvider {
     }
 
     def IScope buildVarScope(MATHUNIT unit) {
+        //@link https://archive.eclipse.org/modeling/tmf/xtext/javadoc/2.5/org/eclipse/xtext/nodemodel/util/NodeModelUtils.html
         val offset = NodeModelUtils.getNode(unit).offset
         val currentVariable = EcoreUtil2.getContainerOfType(unit, VARDECLARATION)
         val column = EcoreUtil2.getContainerOfType(unit, COLUMN)
