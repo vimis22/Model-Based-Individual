@@ -46,7 +46,7 @@ class MyDslScopeProvider extends AbstractMyDslScopeProvider {
 
         // Only include variables declared before the current offset (no forward references)
         // and exclude the variable currently being defined (no self-reference)
-        if (root != null) {
+        if (root !== null) {
             for (variable : root.variables) {
                 if (variable !== currentVariable && NodeModelUtils.getNode(variable)?.endOffset < offset) {
                     globalVariables.add(variable)
@@ -54,7 +54,7 @@ class MyDslScopeProvider extends AbstractMyDslScopeProvider {
             }
         }
 
-        if (table != null) {
+        if (table !== null) {
             for (variable : table.variables) {
                 if (variable !== currentVariable && NodeModelUtils.getNode(variable)?.endOffset < offset) {
                     tableVariables.add(variable)
@@ -62,7 +62,7 @@ class MyDslScopeProvider extends AbstractMyDslScopeProvider {
             }
         }
 
-        if (column != null) {
+        if (column !== null) {
             for (variable : column.variables) {
                 if (variable !== currentVariable && NodeModelUtils.getNode(variable)?.endOffset < offset) {
                     columnVariables.add(variable)

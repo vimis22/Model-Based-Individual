@@ -25,6 +25,7 @@ import java.util.HashMap
  */
 class MyDslGenerator extends AbstractGenerator {
 
+    // This is the Entry point for code generation. Finds the first TABLE and writes LaTeX output to greetings.txt.
     override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
         val table = resource.allContents
                 .filter(TABLE)
@@ -33,12 +34,13 @@ class MyDslGenerator extends AbstractGenerator {
         fsa.generateFile('greetings.txt', table.compile(rows));
     }
 
+    // This method Converts column/row index to a cell reference string, e.g. (0, 1) -> "A1".
     private def getCellRef(int int1, int int2) {
         val line = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         var ref = line.charAt(int1) + int2.toString();
         return ref
     }
-
+    // This methid builds a matrix of evaluated cell values from the table.
     private def ArrayList<ArrayList<String>> getRowData(TABLE table) {
         // Fase 1: Læg alle unevaluerede celleværdier i et HashMap
         val unevaluatedcellref = new HashMap<String, VALUE>();
@@ -49,7 +51,7 @@ class MyDslGenerator extends AbstractGenerator {
             }
         }
 
-        // Fase 2: Evaluer alle celleværdier
+        // This method evaluates all cell references and returns a matrix of strings
         val outerArrayList = new ArrayList<ArrayList<String>>()
         for (var i = 0; i < table.columns.length; i += 1) {
             val row = new ArrayList<String>();
@@ -61,6 +63,7 @@ class MyDslGenerator extends AbstractGenerator {
         return this.transpose(outerArrayList);
     }
 
+    // This method generates a LaTeX tabular block from the table and its evaluated rows.
     private def String compile(TABLE table, ArrayList<ArrayList<String>> rows) {
         return '''
         \begin{tabular}{ |«FOR col : table.columns»c|«ENDFOR» }
@@ -73,6 +76,7 @@ class MyDslGenerator extends AbstractGenerator {
        ''';
     }
 
+    // This method evaluates a cell value: returns a string, computes a range math operation (sum/mean/median), or evaluates an expression.
     private def String cellValueEvaluator(VALUE value, HashMap<String, VALUE> valueMap) {
         if (value.string !== null) {
             return value.string
@@ -101,6 +105,7 @@ class MyDslGenerator extends AbstractGenerator {
         }
     }
 
+    // Recursively evaluates an expression tree to a float value.
     // Erstatter de 5 gamle metoder (addEval, subEval, multEval, dividEval, primEval, mathunitEval)
     // Matcher den nuværende grammar med Plus/Minus/Mult/Div/MATHUNIT (Left Recursion-fix)
     def float compileExp(Expression exp) {
@@ -123,6 +128,7 @@ class MyDslGenerator extends AbstractGenerator {
         }
     }
 
+    // Transposes the column-major matrix to row-major, so rows can be iterated for LaTeX output.
     private def ArrayList<ArrayList<String>> transpose(ArrayList<ArrayList<String>> matrixIn) {
         // FROM: https://stackoverflow.com/a/28057878
         var matrixOut = new ArrayList<ArrayList<String>>();
