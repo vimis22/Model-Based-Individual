@@ -2,30 +2,33 @@ grammar org.xtext.example.mydsl.MyDsl with org.eclipse.xtext.common.Terminals
 
 generate myDsl "http://www.xtext.org/example/mydsl/MyDsl"
 
-// === ENTRY POINT ===
+// ENTRYP-POINT OF THE WHOLE TABLE
 //SYSTEMROOT: tables+=TABLE+;
 SYSTEMROOT: (variables+=VARDECLARATION)* tables+=TABLE+;
 
-// === VARIABLER ===
+// VARIABLE DECLARATION USED IN ROOT, TABLE AND COLUMN
+// Please note, that vardeclaration has been added for Individual extension.
 VARDECLARATION: 'var' type=('int' | 'double' | 'string' | 'boolean') name=ID '=' value=ANYVALUE;
 
+// ANYVALUE DEFINES THE TYPES OF VALUES THAT CAN BE USED IN VARDECLARATION
+// Please note, that ANYVALUE has been added for Individual extension.
 ANYVALUE: numberValue=Exp | stringValue=STRING | booleanValue=BOOLEAN;
 
-// === TABLE ===
+// TABLE DEFINITION WITH NAME AND COLUMNS
 TABLE: 'Table' name=ID (variables+=VARDECLARATION)* (columns+=COLUMN)+;
 
-// === KOLONNE ===
+// COLUMNS WITH NAME, WIDTH, ALIGNMENT, COLOR, LINES AND CELLS
 COLUMN: 'Column' name=LETTER (variables+=VARDECLARATION)* (width=WIDTH)? (alignment=ALIGNMENT)? (color=COLOR)? (line+=LINE)* (cell+=CELL)*;
 //NrColumns: 'Columns' Nr=INT;
 WIDTH: 'Width' number=INT 'cm';
 ALIGNMENT: 'Alignment' position=POSITION;
 COLOR: 'Color' colorstring=COLORSTRING;
 
-// === CELLE ===
+// CELLS WITH NAME, COLOR AND VALUE
 //CELL: 'Cell' name=NUMBER color=COLOR? value=VALUE?;
 CELL: 'Cell' name=CELLINDEX color=COLOR? value=VALUE?;
 
-// Added CellIndex for Individual Extension.
+// Added CellIndex for Updated Individual Extension, in order to use it in the Cell.
 CELLINDEX: INT;
 
 VALUE: 'Value' (string=STRING | expr=Exp | math=MATH '(' range=CELLRANGE ')');
@@ -36,11 +39,16 @@ CELLRANGE: rangestart=CELLREF ':' rangeend=CELLREF;
 
 CELLREF: LETTER "." CELLINDEX;
 
-//terminal NUMBER: INT;
+//NUMBER DEFINES THE TYPES OF VALUES THAT CAN BE USED IN CELL
+// Please note, that NUMBER has been added for Individual extension, and is used in the definition of MATHUNIT, which is used in the definition of Factor, which is used in the definition of Term, which is used in the definition of Exp.
+// Number helps  primarily in managing the types of numeric values in the Variable Declaration, such as double and Integer.
 NUMBER: INT (('.'|',') INT)?;
 
-// === MATEMATIK / UDTRYK ===
+// This is the old version of MATHUNIT, which only allowed for numbers and cell references.
 //MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF];
+
+// The new version also allows for variable references, which can be used in the mathematical expressions in the cells.
+// This is especially useful for the Individual extension, where variables can be declared at different levels (root, table, column) and can be used in the expressions in the cells.
 MATHUNIT: number=NUMBER | cellRef=[CELL|CELLREF] | varRef=[VARDECLARATION|ID];
 
 Exp returns Expression:
@@ -59,7 +67,8 @@ Factor returns Expression:
     MATHUNIT |
     '(' Exp ')';
 
-// === TERMINALER ===
+// These are the terminals, that are used in the grammar.
+// They are fixed values, that produce a set of option values that can be defined by the user in the Runtime DSL.
 terminal BOOLEAN: 'true' | 'false';
 terminal POSITION: 'left' | 'center' | 'right';
 terminal LETTER: ('A'..'Z');

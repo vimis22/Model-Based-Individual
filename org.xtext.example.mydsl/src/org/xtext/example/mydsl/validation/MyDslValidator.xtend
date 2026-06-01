@@ -17,6 +17,8 @@ import org.xtext.example.mydsl.validation.interfaces.IVariableValidator
 
 class MyDslValidator extends AbstractMyDslValidator implements ITableValidator, ITypeChecker, IVariableValidator, IColumnValidator, ICellValidator {
 
+    //These are Error/Warning codes that can used to identify validation issues.
+    // These can be referenced externally, such sa for quick fixes or tests.
     public static val FORWARD_REFERENCE = 'forwardReference'
     public static val DUPLICATE_VAR = 'duplicateVar'
     public static val DUPLICATE_COLUMN = 'duplicateColumn'
@@ -25,8 +27,8 @@ class MyDslValidator extends AbstractMyDslValidator implements ITableValidator, 
     public static val TYPE_MISMATCH = 'typeMismatch'
     public static val MISSING_VALUE = 'missingValue'
 
-    // === ROOT ===
-
+    // Checks that no two global variables share the same name.
+    // Global variables live in SYSTEMROOT, so duplicates here would cause confusion in terms of references across the entire program.
     @Check
     override def checkNoDuplicateVarsInRoot(SYSTEMROOT root) {
         val names = newHashSet
@@ -38,6 +40,8 @@ class MyDslValidator extends AbstractMyDslValidator implements ITableValidator, 
         }
     }
 
+    // Checks that all table names in SYSTEMROOT are unique.
+    // Tables are identified by name, so duplicates would make references ambiguous.
     @Check
     override def checkNoDuplicateTableNames(SYSTEMROOT root) {
         val names = newHashSet
@@ -49,8 +53,8 @@ class MyDslValidator extends AbstractMyDslValidator implements ITableValidator, 
         }
     }
 
-    // === TABLE ===
-
+    // Naming Convention Standard, defined by Vivek & Group: Table names must start with an uppercase letter.
+    // This is a design decision to visually distinguish between tables from variables and columns.
     @Check
     override def checkTableNameStartsWithCapital(TABLE table) {
         if (!Character.isUpperCase(table.name.charAt(0))) {
@@ -60,6 +64,8 @@ class MyDslValidator extends AbstractMyDslValidator implements ITableValidator, 
         }
     }
 
+    // Checks that no two variables within the same table share the same name.
+    // Table-scoped variables shadow global ones, in order to avoid duplicates within a table that would create confusion at the scope level.
     @Check
     override def checkNoDuplicateVarsInTable(TABLE table) {
         val names = newHashSet
@@ -71,6 +77,8 @@ class MyDslValidator extends AbstractMyDslValidator implements ITableValidator, 
         }
     }
 
+    // Checks that all column names within the same table dont have the same name.
+    // This is a design decision to visually distinguish between columns from variables and tables.
     @Check
     override def checkNoDuplicateColumnsInTable(TABLE table) {
         val names = newHashSet
@@ -82,8 +90,8 @@ class MyDslValidator extends AbstractMyDslValidator implements ITableValidator, 
         }
     }
 
-    // === CELL ===
-
+    // Checks that all cell names within the same column dont have the same Number Index.
+    // This is a design decision to visually distinguish between cells from variables and columns.
     @Check
     override def checkNoDuplicateCellsInColumn(COLUMN column) {
         val indices = newHashSet
@@ -95,16 +103,18 @@ class MyDslValidator extends AbstractMyDslValidator implements ITableValidator, 
         }
     }
 
+    // Error if a cell has been declared but has no value assigned.
+    // A cell must have a value, otherwise references to it have nothing to resolve.
     @Check
     override def checkCellHasValue(CELL cell) {
         if (cell.value === null) {
-            warning('Cell ' + cell.name + ' has no value defined',
+            error('Cell ' + cell.name + ' has no value defined',
                 cell, MyDslPackage.Literals.CELL__VALUE, MISSING_VALUE)
         }
     }
 
-    // === VARIABLE ===
-
+    // Enforces naming convention: variable names must start with a lowercase letter.
+    // This distinguishes variables from tables (uppercase) and improves readability.
     @Check
     override def checkVariableNameStartsWithLowercase(VARDECLARATION decl) {
         if (!Character.isLowerCase(decl.name.charAt(0))) {
@@ -113,6 +123,9 @@ class MyDslValidator extends AbstractMyDslValidator implements ITableValidator, 
         }
     }
 
+    // Checks that the assigned value matches the declared type of the variable.
+    // Uses a switch on the declared type (string, boolean, int, double) and validates that the value's corresponding field is non-null.
+    // Design decision: type checking at declaration time catches errors early.
     @Check
     override def void checkVarTypeCompatibility(VARDECLARATION decl) {
         val value = decl.value
@@ -133,9 +146,9 @@ class MyDslValidator extends AbstractMyDslValidator implements ITableValidator, 
         }
     }
 
-    // === REST ===
-
-    // Tillader ikke brug af variable, der er defineret længere nede i koden
+    // Prevents the use of variables that are declared later in the file (forward references).
+    // This method compares the text offset of the reference against the offset of the declaration.
+    // Design decision: We want to ensure, that a variable must declared first in order for it to be used. Otherwise Scope Resolution won't work.
     @Check
     override def checkNoForwardReferences(MATHUNIT unit) {
         if (unit.varRef === null) return
